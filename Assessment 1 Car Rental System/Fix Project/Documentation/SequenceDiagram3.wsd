@@ -1,0 +1,48 @@
+@startuml sequence_diagram_rentmanagement
+title Rent Management Interaction
+
+actor Employee
+
+participant AdminMenu
+participant RentManagement
+
+Employee -> AdminMenu: Login
+AdminMenu -> Employee: input("Enter username: ")
+AdminMenu -> Employee: input("Enter password: ")
+
+AdminMenu -> AdminMenu: verify_user(username, password)
+alt User is Admin
+    AdminMenu -> Employee: display_admin_menu()
+
+    Employee -> AdminMenu: Selects "Manage rent requests" from Admin Menu
+    AdminMenu -> RentManagement: display_rent_requests_menu()
+    RentManagement -> RentManagement: print("Rent Requests Management Menu")
+
+    alt View Rent Requests
+        RentManagement -> Employee: input("Enter choice = 1")
+        RentManagement -> RentManagement: view_rent_requests()
+        RentManagement -> RentManagement: execute SHOW_RENTAL_REQUEST query
+    else Approve Rent Request
+        RentManagement -> Employee: input("Enter choice = 2")
+        RentManagement -> RentManagement: approve_rent_request()
+        RentManagement -> RentManagement: execute SHOW_RENTAL_REQUEST query
+        RentManagement -> Employee: input("Enter the ID of the rent request to approve: ")
+        RentManagement -> RentManagement: execute UPDATE_RENTAL_REQUEST query
+        RentManagement -> RentManagement: execute UPDATE_CAR query
+    else Reject Rent Request
+        RentManagement -> Employee: input("Enter choice = 3")
+        RentManagement -> RentManagement: reject_rent_request()
+        RentManagement -> RentManagement: execute SHOW_RENTAL_REQUEST query
+        RentManagement -> Employee: input("Enter the ID of the rent request to reject: ")
+        RentManagement -> RentManagement: execute UPDATE_RENTAL_REQUEST query
+        RentManagement -> RentManagement: execute UPDATE_CAR query
+    else View Rent History
+        RentManagement -> Employee: input("Enter choice = 4")
+        RentManagement -> RentManagement: view_rent_history()
+        RentManagement -> RentManagement: execute SHOW_RENTAL_HISTORY query
+    end
+    RentManagement -> AdminMenu: return to Admin Menu
+    AdminMenu -> Employee: Logout
+end
+
+@enduml

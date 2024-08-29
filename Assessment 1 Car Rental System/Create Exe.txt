@@ -1,0 +1,1 @@
+pyinstaller --onefile --add-data "configfile.ini;." main_script.py
